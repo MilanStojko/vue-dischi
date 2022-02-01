@@ -1,28 +1,38 @@
 <template>
   <div class="container">
-    <Disk v-for="(disco, index) in DiskArray" :key="index" :info="disco" />
+    <Chosen :dischi="DiskArray" @selezionato="filtra" />
+    <Disk v-for="(disco, index) in generiFiltrati" :key="index" :info="disco" />
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import Disk from "./Disk.vue";
+import Chosen from "./Chosen.vue";
 
 export default {
   name: "Main",
   components: {
     Disk,
+    Chosen,
   },
   data() {
     return {
       apiUrl: " https://flynn.boolean.careers/exercises/api/array/music",
       DiskArray: [],
+      valoreGenere: "",
     };
   },
   created() {
     this.getData();
   },
   methods: {
+    filtra(selected) {
+      this.valoreGenere = selected;
+    },
+    filteredGenre() {
+      this.DiskArray;
+    },
     getData() {
       axios
         .get(this.apiUrl)
@@ -32,6 +42,14 @@ export default {
         .catch(function (error) {
           console.log(error);
         });
+    },
+  },
+  computed: {
+    generiFiltrati() {
+      return this.DiskArray.filter((genere) => {
+        console.log(this.valoreGenere);
+        return genere.genre.includes(this.valoreGenere);
+      });
     },
   },
 };
